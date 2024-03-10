@@ -1,0 +1,18 @@
+cài đặt chọn nhân vật, âm thanh
+tạo animation
+thanh máu 5/5, bộ đếm thời gian
+tutorial
+powerup
+
+21/2
+Button pause game
+panel setting
+logical gamemode
+
+22/2
+ẩn, hiện các panel theo logic
+giải quyết các bool gameMode, gamePause
+
+10/3
+coi như xong UI cho GO panel
+xong cơ chế tính điểm
