@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerAnim = gameObject.GetComponent<Animator>();
+        playerAnim = gameObject.transform.GetChild(0).GetComponent<Animator>();
         playerAnim.SetBool("Static_b", false);
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
     }
@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
         // Throw bones
         if(Input.GetKeyDown(KeyCode.Space))
         {
+            Debug.Log("Shoot");
             Instantiate(bone, transform.position + new Vector3(0, 1, 0), transform.rotation, gameManager.inGameObject.transform);
 //            playerAnim.SetInteger("Animation_int", 10);
         }

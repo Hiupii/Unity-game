@@ -16,3 +16,7 @@ giải quyết các bool gameMode, gamePause
 10/3
 coi như xong UI cho GO panel
 xong cơ chế tính điểm
+
+20/4 
+xong GO panel
+xong setting panel

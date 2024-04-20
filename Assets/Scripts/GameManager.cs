@@ -19,7 +19,9 @@ public class GameManager : MonoBehaviour
     public static int point = 0;
 
     [SerializeField]private TextMeshProUGUI pointTxt;
-    
+    [SerializeField]private TextMeshProUGUI lastPoint;
+
+    [SerializeField] private GameObject player;
     public GameObject inGameObject;
     private GameObject setting_Panel;
     private GameObject config_Panel;
@@ -43,18 +45,20 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(gameMode)
+        if(gameMode) //start to play
         {
             inGameObject.SetActive(true);
             Spawn();
             hpText.text = $"HP = {hp}";
             pointTxt.text = $"Point = {point}";
         }   
-        else if(!gameMode && gamePause)
+        else if(!gameMode && gamePause) // pause game
         {
             inGameObject.SetActive(false);
+            player.SetActive(false);
+
         }
-        else if(!gameMode && !gamePause)
+        else if(!gameMode && !gamePause) //gameover
         {
             DestroyAllChild(inGameObject);
         }
@@ -63,6 +67,12 @@ public class GameManager : MonoBehaviour
         {
             gameMode = false;
             GO_Panel.SetActive(true);
+            lastPoint.text = point.ToString();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            pauseAction();
         }
     }
 
@@ -103,17 +113,31 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void pauseAction()
+    public void pauseAction() //setting button
     {
         gameMode = false;
         gamePause = true;
         setting_Panel.SetActive(true);
     }
 
-    public void confirmAction()
+    public void confirmAction() // confirm button in setting panel
     {
         setting_Panel.SetActive(false);
         gameMode = true;
         gamePause = false;
+        player.SetActive(true);
+    }
+
+    public void replay() //replay button in gameover panel
+    {
+        gameMode = true;
+        GO_Panel.SetActive(false);
+        hp = 5;
+        point = 0;
+    }
+
+    public void exit()
+    {
+        Application.Quit();
     }
 }
