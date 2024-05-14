@@ -7,74 +7,148 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> animals;
+    [SerializeField] private List<GameObject> characters;
+    [SerializeField]private List<Animator> startAnim;
+
+
 
     private bool wait;
     private float minPosX = -11.0f;
     private float maxPosX = 11.45f;
 
     public int hp = 5;
-    public bool gameMode = true;
+    public bool gameMode;
     public bool gamePause = false;
+    public bool set = true;
 
     public static int point = 0;
 
     [SerializeField]private TextMeshProUGUI pointTxt;
     [SerializeField]private TextMeshProUGUI lastPoint;
+    [SerializeField] private TextMeshProUGUI chooseText;
 
     [SerializeField] private GameObject player;
+    public GameObject modelPlayer;
+
     public GameObject inGameObject;
     private GameObject setting_Panel;
     private GameObject config_Panel;
     private GameObject GO_Panel;
 
+    [SerializeField]private GameObject HPBar;
+    [SerializeField] private GameObject Point;
 
-    [SerializeField]private TextMeshProUGUI hpText;
+    [SerializeField]private GameObject startCam;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        //gameMode = false;
+        gameMode = false;
         inGameObject = GameObject.Find("InGame Object");
         setting_Panel = GameObject.Find("Setting Panel");
         GO_Panel = GameObject.Find("Game Over Panel");
         config_Panel = GameObject.Find("Config Panel");
-        config_Panel.SetActive(false);
+        config_Panel.SetActive(true);
         GO_Panel.SetActive(false);
         setting_Panel.SetActive(false);
+        HPBar.SetActive(false);
+        Point.SetActive(false);
+
+
+        for (int i = 0;i<3;i++)
+        {
+            startAnim[i] = characters[i].GetComponent<Animator>();
+        }
+
+        characters[0].SetActive(true);
+        characters[1].SetActive(false);
+        characters[2].SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(gameMode) //start to play
+        if(modelPlayer.name == null)
         {
-            inGameObject.SetActive(true);
-            Spawn();
-            hpText.text = $"HP = {hp}";
-            pointTxt.text = $"Point = {point}";
-        }   
-        else if(!gameMode && gamePause) // pause game
-        {
-            inGameObject.SetActive(false);
-            player.SetActive(false);
-
+            chooseText.text = "Choosing: ";
         }
-        else if(!gameMode && !gamePause) //gameover
+        else
         {
-            DestroyAllChild(inGameObject);
+            chooseText.text = "Choosing: " + modelPlayer.name;
         }
 
-        if (hp == 0)
+        if (!set)
         {
-            gameMode = false;
-            GO_Panel.SetActive(true);
-            lastPoint.text = point.ToString();
-        }
+            HPBar.SetActive(true);
+            Point.SetActive(true);
+            if(gameMode) //start to play
+            {
+                inGameObject.SetActive(true);
+                Spawn();
+                pointTxt.text = $"{point}";
+            }   
+            else if(!gameMode && gamePause) // pause game
+            {
+                inGameObject.SetActive(false);
+                player.SetActive(false);
 
-        if(Input.GetKeyDown(KeyCode.Escape))
-        {
-            pauseAction();
-        }
+            }
+            else if(!gameMode && !gamePause) //gameover
+            {
+                DestroyAllChild(inGameObject);
+            }
+
+            if (hp == 0)
+            {
+                gameMode = false;
+                GO_Panel.SetActive(true);
+                lastPoint.text = point.ToString();
+            }
+
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {
+                pauseAction();
+            }
+        }    
+
+        //chooseChar();
     }
+
+    public void setP1()
+    {
+        modelPlayer = characters[0];
+        characters[0].SetActive(true);
+        characters[1].SetActive(false);
+        characters[2].SetActive(false);
+        startAnim[0].SetInteger("Animation_int", 4);
+    }
+
+    public void setP2()
+    {
+        modelPlayer = characters[1];
+        characters[0].SetActive(false);
+        characters[1].SetActive(true);
+        characters[2].SetActive(false);
+        startAnim[1].SetInteger("Animation_int", 6);
+    }
+    public void setP3()
+    {
+        modelPlayer = characters[2];
+        characters[0].SetActive(false);
+        characters[1].SetActive(false);
+        characters[2].SetActive(true);
+        startAnim[2].SetInteger("Animation_int", 7);
+    }
+
+    public void start()
+    {
+        Instantiate(modelPlayer, player.transform);
+        set = !set;
+        gameMode = true;
+        config_Panel.SetActive(false);
+        startCam.SetActive(false);
+    }    
 
     int RandomAnimal()
     {
@@ -98,9 +172,7 @@ public class GameManager : MonoBehaviour
     IEnumerator MyCoroutine()
     {
         wait = true;
-        Debug.Log("Start wait time");
         yield return new WaitForSeconds(2.0f);
-        Debug.Log("wait done");
         Instantiate(animals[RandomAnimal()], RandomPos(), new Quaternion(0, 180, 0, 0), inGameObject.transform);
         wait = false;
     }

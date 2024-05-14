@@ -355,6 +355,7 @@
 "Assets/Scripts/Animal.cs"
 "Assets/Scripts/Bullet.cs"
 "Assets/Scripts/GameManager.cs"
+"Assets/Scripts/HpController.cs"
 "Assets/Scripts/Player.cs"
 -langversion:9.0
 

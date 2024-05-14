@@ -17,38 +17,43 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerAnim = gameObject.transform.GetChild(0).GetComponent<Animator>();
-        playerAnim.SetBool("Static_b", false);
+        
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        horizontalInput = Input.GetAxis("Horizontal");
-
-        // Movements
-        if (horizontalInput != 0)
+        if(!gameManager.set)
         {
-            transform.Translate(new Vector3(horizontalInput * speed, 0, 0));
-            playerAnim.SetFloat("Speed_f", 0.3f);
-        }
-        else
-            playerAnim.SetFloat("Speed_f", 0);
+            playerAnim = gameObject.transform.GetChild(0).GetComponent<Animator>();
+            playerAnim.SetBool("Static_b", false);
+            horizontalInput = Input.GetAxis("Horizontal");
 
-        // Throw bones
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("Shoot");
-            Instantiate(bone, transform.position + new Vector3(0, 1, 0), transform.rotation, gameManager.inGameObject.transform);
-//            playerAnim.SetInteger("Animation_int", 10);
-        }
+            // Movements
+            if (horizontalInput != 0)
+            {
+                transform.Translate(new Vector3(horizontalInput * speed, 0, 0));
+                playerAnim.SetFloat("Speed_f", 0.3f);
+            }
+            else
+                playerAnim.SetFloat("Speed_f", 0);
 
-        //Jump for avoid Object
+            // Throw bones
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Log("Shoot");
+                Instantiate(bone, transform.position + new Vector3(0, 1, 0), transform.rotation, gameManager.inGameObject.transform);
+    //            playerAnim.SetInteger("Animation_int", 10);
+            }
 
-        // Prevent player out of Bound
-        Vector3 currentPosition = transform.position;
-        currentPosition.x = Mathf.Clamp(currentPosition.x, minX, maxX);
-        transform.position = currentPosition;
+            //Jump for avoid Object
+
+            // Prevent player out of Bound
+            Vector3 currentPosition = transform.position;
+            currentPosition.x = Mathf.Clamp(currentPosition.x, minX, maxX);
+            transform.position = currentPosition;
+        }    
+
     }
 }
